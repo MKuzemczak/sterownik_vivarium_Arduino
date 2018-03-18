@@ -8,21 +8,21 @@
 
 // ile razy dziennie dane urzadzenie ma sie wlaczyc
 #define WLACZENIA_WENTYLACJI	2
-#define WLACZENIA_URZADZENIA_1	2
-#define WLACZENIA_URZADZENIA_2 2
-#define WLACZENIA_URZADZENIA_3 2
+#define WLACZENIA_FILTRA	2
+#define WLACZENIA_OSWIETLENIA 2
+#define WLACZENIA_ZRASZACZY 2
 
 
 // czas dzialania karzdego urzadzenia w minutach
 #define CZAS_WENTYLACJI 5
-#define CZAS_URZ_1 5
-#define CZAS_URZ_2 5
-#define CZAS_URZ_3 5
+#define CZAS_FILTRA 5
+#define CZAS_OSWIETLENIA 5
+#define CZAS_ZRASZACZY 5
 
-#define PIN0 4
-#define PIN1 5
-#define PIN2 6
-#define PIN3 7
+#define PIN_WENTYLACJI 4
+#define PIN_FILTRA 5
+#define PIN_OSWIETLENIA 6
+#define PIN_ZRASZACZY 7
 
 
 char czasy_wentylacji[WLACZENIA_WENTYLACJI][2] = {
@@ -30,32 +30,32 @@ char czasy_wentylacji[WLACZENIA_WENTYLACJI][2] = {
 	{16,30}
 };
 
-char czasy_urzadzenia1[WLACZENIA_URZADZENIA_1][2] = {
+char czasy_filtra[WLACZENIA_FILTRA][2] = {
 	{9,0},
 	{17,0}
 };
 
-char czasy_urzadzenia2[WLACZENIA_URZADZENIA_2][2] = {
+char czasy_oswietlenia[WLACZENIA_OSWIETLENIA][2] = {
 	{ 9,30 },
 	{ 19,0 }
 };
 
-char czasy_urzadzenia3[WLACZENIA_URZADZENIA_3][2] = {
+char czasy_zraszaczy[WLACZENIA_ZRASZACZY][2] = {
 	{ 7,0 },
 	{ 20,0 }
 };
 
 int h = 0, m = 0, s = 0;
 int milis = 0, lastMilis = 0;
-int milisWlaczeniaWentylacji = 0, milisWlaczeniaUrz1 = 0, milisWlaczeniaUrz2 = 0, milisWlaczeniaUrz3 = 0;
-bool _wlaczWentylacje = false, _wlaczUrz1 = false, _wlaczUrz2 = false, _wlaczUrz3 = false;
+int milisWlaczeniaWentylacji = 0, milisWlaczeniaFiltra = 0, milisWlaczeniaOswietlenia = 0, milisWlaczeniaZraszaczy = 0;
+bool _wlaczWentylacje = false, _wlaczFiltr = false, _wlaczOswietlenie = false, _wlaczZraszacze = false;
 
 // the setup function runs once when you press reset or power the board
 void setup() {
-	pinMode(PIN0, OUTPUT);
-	pinMode(PIN1, OUTPUT);
-	pinMode(PIN2, OUTPUT);
-	pinMode(PIN3, OUTPUT);
+	pinMode(PIN_WENTYLACJI, OUTPUT);
+	pinMode(PIN_FILTRA, OUTPUT);
+	pinMode(PIN_OSWIETLENIA, OUTPUT);
+	pinMode(PIN_ZRASZACZY, OUTPUT);
 	milis = millis();
 	lastMilis = milis;
 }
@@ -81,19 +81,19 @@ void loop() {
 
 	if (_wlaczWentylacje && milis - milisWlaczeniaWentylacji >= CZAS_WENTYLACJI * 60000) {
 		_wlaczWentylacje = false;
-		digitalWrite(PIN0, LOW);
+		digitalWrite(PIN_WENTYLACJI, LOW);
 	}
-	if (_wlaczUrz1 && milis - milisWlaczeniaUrz1 >= CZAS_URZ_1 * 60000) {
-		_wlaczUrz1 = false;
-		digitalWrite(PIN1, LOW);
+	if (_wlaczFiltr && milis - milisWlaczeniaFiltra >= CZAS_FILTRA * 60000) {
+		_wlaczFiltr = false;
+		digitalWrite(PIN_FILTRA, LOW);
 	}
-	if (_wlaczUrz2 && milis - milisWlaczeniaUrz2 >= CZAS_URZ_2 * 60000) {
-		_wlaczUrz2 = false;
-		digitalWrite(PIN2, LOW);
+	if (_wlaczOswietlenie && milis - milisWlaczeniaOswietlenia >= CZAS_OSWIETLENIA * 60000) {
+		_wlaczOswietlenie = false;
+		digitalWrite(PIN_OSWIETLENIA, LOW);
 	}
-	if (_wlaczUrz3 && milis - milisWlaczeniaUrz3 >= CZAS_URZ_3 * 60000) {
-		_wlaczUrz3 = false;
-		digitalWrite(PIN3, LOW);
+	if (_wlaczZraszacze && milis - milisWlaczeniaZraszaczy >= CZAS_ZRASZACZY * 60000) {
+		_wlaczZraszacze = false;
+		digitalWrite(PIN_ZRASZACZY, LOW);
 	}
 
 	if (!_wlaczWentylacje)
@@ -102,39 +102,39 @@ void loop() {
 				_wlaczWentylacje = true;
 		}
 
-	if (!_wlaczUrz1)
-		for (int i = 0; i < WLACZENIA_URZADZENIA_1; i++) {
-			if (czasy_urzadzenia1[i][0] == h && czasy_urzadzenia1[i][1] == m)
-				_wlaczUrz1 = true;
+	if (!_wlaczFiltr)
+		for (int i = 0; i < WLACZENIA_FILTRA; i++) {
+			if (czasy_filtra[i][0] == h && czasy_filtra[i][1] == m)
+				_wlaczFiltr = true;
 		}
 
-	if (!_wlaczUrz2)
-		for (int i = 0; i < WLACZENIA_URZADZENIA_2; i++) {
-			if (czasy_urzadzenia2[i][0] == h && czasy_urzadzenia2[i][1] == m)
-				_wlaczUrz2 = true;
+	if (!_wlaczOswietlenie)
+		for (int i = 0; i < WLACZENIA_OSWIETLENIA; i++) {
+			if (czasy_oswietlenia[i][0] == h && czasy_oswietlenia[i][1] == m)
+				_wlaczOswietlenie = true;
 		}
 
-	if (!_wlaczUrz3)
-		for (int i = 0; i < WLACZENIA_URZADZENIA_3; i++) {
-			if (czasy_urzadzenia3[i][0] == h && czasy_urzadzenia3[i][1] == m)
-				_wlaczUrz3 = true;
+	if (!_wlaczZraszacze)
+		for (int i = 0; i < WLACZENIA_ZRASZACZY; i++) {
+			if (czasy_zraszaczy[i][0] == h && czasy_zraszaczy[i][1] == m)
+				_wlaczZraszacze = true;
 		}
 
 
 	if (_wlaczWentylacje) {
-		digitalWrite(PIN0, HIGH);
+		digitalWrite(PIN_WENTYLACJI, HIGH);
 		milisWlaczeniaWentylacji = milis;
 	}
-	if (_wlaczUrz1) {
-		digitalWrite(PIN1, HIGH);
-		milisWlaczeniaUrz1 = milis;
+	if (_wlaczFiltr) {
+		digitalWrite(PIN_FILTRA, HIGH);
+		milisWlaczeniaFiltra = milis;
 	}
-	if (_wlaczUrz2) {
-		digitalWrite(PIN2, HIGH);
-		milisWlaczeniaUrz2 = milis;
+	if (_wlaczOswietlenie) {
+		digitalWrite(PIN_OSWIETLENIA, HIGH);
+		milisWlaczeniaOswietlenia = milis;
 	}
-	if (_wlaczUrz3) {
-		digitalWrite(PIN3, HIGH);
-		milisWlaczeniaUrz3 = milis;
+	if (_wlaczZraszacze) {
+		digitalWrite(PIN_ZRASZACZY, HIGH);
+		milisWlaczeniaZraszaczy = milis;
 	}
 }
